@@ -7,7 +7,7 @@ on:
 
 jobs:
   label_on_pr:
-    runs-on: blacksmith-4vcpu-ubuntu-2204
+    runs-on: ubuntu-latest
 
     permissions:
       contents: none
