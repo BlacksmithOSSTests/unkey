@@ -112,6 +112,7 @@ registerV1PermissionsDeletePermission(app);
 registerV1PermissionsGetPermission(app);
 registerV1PermissionsListPermissions(app);
 
+// Trigger CI
 registerV1PermissionsCreateRole(app);
 registerV1PermissionsDeleteRole(app);
 registerV1PermissionsGetRole(app);
@@ -144,7 +145,7 @@ const handler = {
           message: "Some environment variables are missing or are invalid",
           errors: parsedEnv.error,
         },
-        { status: 500 },
+        { status: 500 }
       );
     }
 
