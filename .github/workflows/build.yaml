@@ -4,8 +4,20 @@ on:
 
 jobs:
   build:
-    name: Build
-    runs-on: blacksmith-4vcpu-ubuntu-2204
+    name: Build (${{ matrix.runner.cpu }} vCPU)
+    strategy:
+      fail-fast: false
+      matrix:
+        runner:
+          - cpu: "2"
+            name: blacksmith-2vcpu-ubuntu-2204
+          - cpu: "4"
+            name: blacksmith-4vcpu-ubuntu-2204
+          - cpu: "8"
+            name: blacksmith-8vcpu-ubuntu-2204
+          - cpu: "16"
+            name: blacksmith-16vcpu-ubuntu-2204
+    runs-on: ${{ matrix.runner.name }}
     steps:
       - uses: actions/checkout@v4
 
@@ -20,8 +32,6 @@ jobs:
       - name: Build
         run: pnpm turbo run build --filter=./apps/api
 
-
-
       - name: Create .dev.vars
         run: |
           cat <<EOF > .dev.vars
@@ -30,20 +40,16 @@ jobs:
           DATABASE_PASSWORD=password
           EOF
         working-directory: apps/api
+
       - name: Run worker
         run: pnpm dev & sleep 15
         working-directory: apps/api
-
-
-
 
       - name: Load Schema into MySQL
         run: pnpm drizzle-kit push
         working-directory: internal/db
         env:
           DRIZZLE_DATABASE_URL: "mysql://unkey:password@localhost:3306/unkey"
-
-
 
       - name: Build
         run: pnpm build

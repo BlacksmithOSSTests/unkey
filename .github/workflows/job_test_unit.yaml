@@ -5,8 +5,8 @@ on:
 jobs:
   test:
     strategy:
-     fail-fast: false
-     matrix:
+      fail-fast: false
+      matrix:
         path:
           - "./internal/billing"
           - "./internal/encryption"
@@ -20,13 +20,20 @@ jobs:
           - "./packages/hono"
           - "./packages/nextjs"
           - "./packages/rbac"
+        runner:
+          - cpu: "2"
+            name: blacksmith-2vcpu-ubuntu-2204
+          - cpu: "4"
+            name: blacksmith-4vcpu-ubuntu-2204
+          - cpu: "8"
+            name: blacksmith-8vcpu-ubuntu-2204
+          - cpu: "16"
+            name: blacksmith-16vcpu-ubuntu-2204
 
-    name: Test ${{matrix.path}}
-    runs-on: blacksmith-4vcpu-ubuntu-2204
+    name: Test ${{matrix.path}} on ${{ matrix.runner.cpu }} vCPU
+    runs-on: ${{ matrix.runner.name }}
     steps:
       - uses: actions/checkout@v4
-
-
       - name: Install
         uses: ./.github/actions/install
         with:
