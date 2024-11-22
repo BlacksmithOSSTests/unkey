@@ -2,11 +2,22 @@ name: Test Agent Local
 on:
   workflow_call:
 
-
-
 jobs:
   test_agent_local:
-    runs-on: blacksmith-4vcpu-ubuntu-2204
+    name: Test Agent Local (${{ matrix.runner.cpu }} vCPU)
+    strategy:
+      fail-fast: false
+      matrix:
+        runner:
+          - cpu: "2"
+            name: blacksmith-2vcpu-ubuntu-2204
+          - cpu: "4"
+            name: blacksmith-4vcpu-ubuntu-2204
+          - cpu: "8"
+            name: blacksmith-8vcpu-ubuntu-2204
+          - cpu: "16"
+            name: blacksmith-16vcpu-ubuntu-2204
+    runs-on: ${{ matrix.runner.name }}
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
@@ -14,7 +25,6 @@ jobs:
         uses: ./.github/actions/install
         with:
           go: true
-
 
       - name: Build
         run: task build
